@@ -61,10 +61,7 @@ if (__name__ == "__main__"):
     parser.add_argument("-p", "--port",default="12345", help="PORT number eg:- 12345")
     args = parser.parse_args()
 
-    if(args.port):
-        port = int(args.port)
-    else:
-        port = 12345
+    port = int(args.port)
 
     remote_validator = vcf_server(port)
     remote_validator.run()
