@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import socket
-from util.end_dec import dec, enc
+from util.enc_dec import dec, enc
 
 
 def print_data(data):

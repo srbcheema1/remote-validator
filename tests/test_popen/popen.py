@@ -1,6 +1,6 @@
 import subprocess as sp
 
-from util.end_dec import enc, dec
+from util.enc_dec import enc, dec
 def get_input():
     inp = input() + "\n"
     return enc(inp)
