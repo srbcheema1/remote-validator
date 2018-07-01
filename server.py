@@ -5,6 +5,7 @@ import socket
 import sys
 import subprocess as sp
 from util.enc_dec import enc, dec
+from util.string_constants import vcf_path
 
 class vcf_server:
     def __init__(self, port=12345):
@@ -39,7 +40,7 @@ class vcf_server:
     def run(self):
         conn,addr=self.soc.accept()
         print('Connected to :',addr)
-        validator = sp.Popen(["./tests/test_popen/even.out"], stdin=sp.PIPE,stdout=sp.PIPE)
+        validator = sp.Popen([vcf_path], stdin=sp.PIPE,stdout=sp.PIPE)
 
         while True:
             if (validator.poll() == None): # is alive
