@@ -1,11 +1,13 @@
 #include <iostream>
 
 int main(){
-    int t;
-    std::cin>>t;
-    while(t--){
+    while(true){
         int a;
         std::cin >> a;
+        if( a == 0 ) {
+            break;
+        }
+
         if ( a % 2 == 0 ) {
             std::cout << "even" << std::endl;
         } else {

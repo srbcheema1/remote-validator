@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
 import socket
+from util.end_dec import dec, enc
 
 
 def print_data(data):
-    print(data.decode("utf-8"))
+    print(dec(data))
 
 def get_input():
-    inp = input()
-    return inp.encode('UTF-8')
+    data = input()
+    return enc(data)
 
 def create_connection():
     host="127.0.0.1"
