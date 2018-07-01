@@ -1,46 +1,70 @@
 #!/usr/bin/env python3
 
+import argparse
 import socket
 import sys
 import subprocess as sp
 from util.enc_dec import enc, dec
 
-host="127.0.0.1"
-port=12345
+class vcf_server:
+    def __init__(self, port=12345):
+        self.port = port
+        self.hostname = socket.gethostname() # srb-pc
+        self.host = "127.0.0.1"
+        self.soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # self.ssocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) #dono
+        self.soc.bind((self.host, self.port))
+        self.soc.listen(5)
 
-s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-s.bind((host,port))
-s.listen(5)
+        self.socketlist = []
+        print('ChatServer [ %s ] started at port [ %s ]' % (self.host, self.port))
 
-def print_data(data):
-    print("got",end=' ')
-    print(data)
 
-def endl(data):
-    if(data[-1] == enc('\n')):
-        return data
+    def print_data(self,data):
+        print("got",end=' ')
+        print(data)
+
+    def endl(self,data):
+        if(data[-1] == enc('\n')):
+            return data
+        else:
+            return data + enc('\n')
+
+    def verify_data(self,validator,data):
+        print("verifying ")
+        validator.stdin.write(self.endl(data))
+        validator.stdin.flush()
+        return validator.stdout.readline()
+
+    def run(self):
+        conn,addr=self.soc.accept()
+        print('Connected to :',addr)
+        validator = sp.Popen(["./tests/test_popen/even.out"], stdin=sp.PIPE,stdout=sp.PIPE)
+
+        while True:
+            if (validator.poll() == None): # is alive
+                data=conn.recv(1024)
+                if not data :
+                    break
+                self.print_data(data)
+                reply = self.verify_data(validator,data)
+                conn.sendall(reply)
+            else:
+                print("validation completes :)")
+                break
+
+        conn.close()
+
+
+if (__name__ == "__main__"):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--port",default="12345", help="PORT number eg:- 12345")
+    args = parser.parse_args()
+
+    if(args.port):
+        port = int(args.port)
     else:
-        return data + enc('\n')
+        port = 12345
 
-def verify_data(b,data):
-    print("verifying ")
-    b.stdin.write(endl(data))
-    b.stdin.flush()
-    return b.stdout.readline()
-
-conn,addr=s.accept()
-print('Connected by :',addr)
-b = sp.Popen(["./tests/test_popen/even.out"], stdin=sp.PIPE,stdout=sp.PIPE)
-
-while True:
-    if (b.poll() == None):
-        data=conn.recv(1024)
-        if not data : break
-        print_data(data)
-        reply = verify_data(b,data)
-        conn.sendall(reply)
-    else:
-        print("validation completes :)")
-        break
-
-conn.close()
+    remote_validator = vcf_server(port)
+    remote_validator.run()
