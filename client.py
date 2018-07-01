@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import socket
 from util.enc_dec import dec, enc
 
@@ -8,7 +9,11 @@ def print_data(data):
     print(dec(data))
 
 def get_input():
-    data = input()
+    try:
+        data = input()
+    except:
+        print("exiting . . .")
+        sys.exit()
     return enc(data)
 
 def create_connection():
