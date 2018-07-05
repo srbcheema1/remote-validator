@@ -9,5 +9,5 @@ message String {
 }
 
 service Calculator {
-    rpc Even(Number) returns (String) {}
+    rpc Even(stream Number) returns (stream String) {}
 }

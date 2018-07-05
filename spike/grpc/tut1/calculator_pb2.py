@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='calculator.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x10\x63\x61lculator.proto\"\x17\n\x06Number\x12\r\n\x05value\x18\x01 \x01(\x02\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t2(\n\nCalculator\x12\x1a\n\x04\x45ven\x12\x07.Number\x1a\x07.String\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10\x63\x61lculator.proto\"\x17\n\x06Number\x12\r\n\x05value\x18\x01 \x01(\x02\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t2,\n\nCalculator\x12\x1e\n\x04\x45ven\x12\x07.Number\x1a\x07.String\"\x00(\x01\x30\x01\x62\x06proto3')
 )
 
 
@@ -113,7 +113,7 @@ _CALCULATOR = _descriptor.ServiceDescriptor(
   index=0,
   options=None,
   serialized_start=70,
-  serialized_end=110,
+  serialized_end=114,
   methods=[
   _descriptor.MethodDescriptor(
     name='Even',

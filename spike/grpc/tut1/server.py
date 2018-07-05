@@ -5,15 +5,19 @@ import time
 import calculator_pb2
 import calculator_pb2_grpc
 
-import calculator
 
-# create a class to define the server functions, derived from
-# calculator_pb2_grpc.CalculatorServicer
 class CalculatorServicer(calculator_pb2_grpc.CalculatorServicer):
     def Even(self, request, context):
-        response = calculator_pb2.String()
-        response.value = calculator.Even(request.value)
-        return response
+
+        # metadata is a list of arbitrary key-value pairs that the client can send along with a reques
+        metadata = dict(context.invocation_metadata())
+        print(metadata)
+
+        for req in request:
+            if(req.value%2==0):
+                response = calculator_pb2.String()
+                response.value = "even"
+                yield response
 
 
 # create a gRPC server

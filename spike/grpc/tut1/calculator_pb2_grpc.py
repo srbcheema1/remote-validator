@@ -14,7 +14,7 @@ class CalculatorStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.Even = channel.unary_unary(
+    self.Even = channel.stream_stream(
         '/Calculator/Even',
         request_serializer=calculator__pb2.Number.SerializeToString,
         response_deserializer=calculator__pb2.String.FromString,
@@ -25,7 +25,7 @@ class CalculatorServicer(object):
   # missing associated documentation comment in .proto file
   pass
 
-  def Even(self, request, context):
+  def Even(self, request_iterator, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -35,7 +35,7 @@ class CalculatorServicer(object):
 
 def add_CalculatorServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'Even': grpc.unary_unary_rpc_method_handler(
+      'Even': grpc.stream_stream_rpc_method_handler(
           servicer.Even,
           request_deserializer=calculator__pb2.Number.FromString,
           response_serializer=calculator__pb2.String.SerializeToString,
