@@ -3,8 +3,7 @@ all:
 
 compile:
 	echo "compiling proto file"
-	python -m grpc_tools.protoc -I./include --python_out=./lib --grpc_python_out=./lib include/validator.proto
+	python -m grpc_tools.protoc -I./include --python_out=. --grpc_python_out=. include/validator.proto
 
 clean:
-	rm -f -r lib
-	mkdir lib
+	rm *pb2*

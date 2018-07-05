@@ -4,7 +4,7 @@ import grpc
 import validator_pb2 as validator__pb2
 
 
-class CalculatorStub(object):
+class ValidatorStub(object):
   # missing associated documentation comment in .proto file
   pass
 
@@ -14,18 +14,18 @@ class CalculatorStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.Even = channel.stream_stream(
-        '/Calculator/Even',
-        request_serializer=validator__pb2.Number.SerializeToString,
+    self.Validate = channel.stream_stream(
+        '/Validator/Validate',
+        request_serializer=validator__pb2.String.SerializeToString,
         response_deserializer=validator__pb2.String.FromString,
         )
 
 
-class CalculatorServicer(object):
+class ValidatorServicer(object):
   # missing associated documentation comment in .proto file
   pass
 
-  def Even(self, request_iterator, context):
+  def Validate(self, request_iterator, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -33,14 +33,14 @@ class CalculatorServicer(object):
     raise NotImplementedError('Method not implemented!')
 
 
-def add_CalculatorServicer_to_server(servicer, server):
+def add_ValidatorServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'Even': grpc.stream_stream_rpc_method_handler(
-          servicer.Even,
-          request_deserializer=validator__pb2.Number.FromString,
+      'Validate': grpc.stream_stream_rpc_method_handler(
+          servicer.Validate,
+          request_deserializer=validator__pb2.String.FromString,
           response_serializer=validator__pb2.String.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      'Calculator', rpc_method_handlers)
+      'Validator', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))

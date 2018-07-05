@@ -2,8 +2,8 @@
 
 import grpc
 
-import calculator_pb2
-import calculator_pb2_grpc
+import validator_pb2
+import validator_pb2_grpc
 
 # open a gRPC channel
 channel = grpc.insecure_channel('localhost:50051')
@@ -15,15 +15,15 @@ except grpc.FutureTimeoutError:
     sys.exit('Error connecting to server')
 else:
     # create a stub (client)
-    stub = calculator_pb2_grpc.CalculatorStub(channel)
+    stub = validator_pb2_grpc.ValidatorStub(channel)
 
 
 def create_iterator():
     while(True):
-        inp = int(input())
-        number = calculator_pb2.Number(value=inp)
+        inp = input()
+        number = validator_pb2.String(value=inp)
         yield number
 
 number_iterator = create_iterator()
-for out in stub.Even(number_iterator):
+for out in stub.Validate(number_iterator):
     print(out.value)

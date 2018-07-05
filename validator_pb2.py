@@ -19,41 +19,10 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='validator.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x0fvalidator.proto\"\x17\n\x06Number\x12\r\n\x05value\x18\x01 \x01(\x02\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t2,\n\nCalculator\x12\x1e\n\x04\x45ven\x12\x07.Number\x1a\x07.String\"\x00(\x01\x30\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0fvalidator.proto\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t2/\n\tValidator\x12\"\n\x08Validate\x12\x07.String\x1a\x07.String\"\x00(\x01\x30\x01\x62\x06proto3')
 )
 
 
-
-
-_NUMBER = _descriptor.Descriptor(
-  name='Number',
-  full_name='Number',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='value', full_name='Number.value', index=0,
-      number=1, type=2, cpp_type=6, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=19,
-  serialized_end=42,
-)
 
 
 _STRING = _descriptor.Descriptor(
@@ -82,20 +51,12 @@ _STRING = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=44,
-  serialized_end=67,
+  serialized_start=19,
+  serialized_end=42,
 )
 
-DESCRIPTOR.message_types_by_name['Number'] = _NUMBER
 DESCRIPTOR.message_types_by_name['String'] = _STRING
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
-Number = _reflection.GeneratedProtocolMessageType('Number', (_message.Message,), dict(
-  DESCRIPTOR = _NUMBER,
-  __module__ = 'validator_pb2'
-  # @@protoc_insertion_point(class_scope:Number)
-  ))
-_sym_db.RegisterMessage(Number)
 
 String = _reflection.GeneratedProtocolMessageType('String', (_message.Message,), dict(
   DESCRIPTOR = _STRING,
@@ -106,27 +67,27 @@ _sym_db.RegisterMessage(String)
 
 
 
-_CALCULATOR = _descriptor.ServiceDescriptor(
-  name='Calculator',
-  full_name='Calculator',
+_VALIDATOR = _descriptor.ServiceDescriptor(
+  name='Validator',
+  full_name='Validator',
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=69,
-  serialized_end=113,
+  serialized_start=44,
+  serialized_end=91,
   methods=[
   _descriptor.MethodDescriptor(
-    name='Even',
-    full_name='Calculator.Even',
+    name='Validate',
+    full_name='Validator.Validate',
     index=0,
     containing_service=None,
-    input_type=_NUMBER,
+    input_type=_STRING,
     output_type=_STRING,
     options=None,
   ),
 ])
-_sym_db.RegisterServiceDescriptor(_CALCULATOR)
+_sym_db.RegisterServiceDescriptor(_VALIDATOR)
 
-DESCRIPTOR.services_by_name['Calculator'] = _CALCULATOR
+DESCRIPTOR.services_by_name['Validator'] = _VALIDATOR
 
 # @@protoc_insertion_point(module_scope)

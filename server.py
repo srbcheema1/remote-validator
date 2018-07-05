@@ -4,20 +4,21 @@ import grpc
 from concurrent import futures
 import time
 
-import calculator_pb2
-import calculator_pb2_grpc
+import validator_pb2
+import validator_pb2_grpc
 
 
-class CalculatorServicer(calculator_pb2_grpc.CalculatorServicer):
-    def Even(self, request, context):
+class ValidatorServicer(validator_pb2_grpc.ValidatorServicer):
+    def Validate(self, request, context):
 
         # metadata is a list of arbitrary key-value pairs that the client can send along with a reques
         metadata = dict(context.invocation_metadata())
         print(metadata)
 
         for req in request:
-            if(req.value%2==0):
-                response = calculator_pb2.String()
+            val = int(req.value)
+            if(val%2==0):
+                response = validator_pb2.String()
                 response.value = "even"
                 yield response
 
@@ -25,9 +26,9 @@ class CalculatorServicer(calculator_pb2_grpc.CalculatorServicer):
 # create a gRPC server
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
-# use the generated function `add_CalculatorServicer_to_server`
+# use the generated function `add_ValidatorServicer_to_server`
 # to add the defined class to the server
-calculator_pb2_grpc.add_CalculatorServicer_to_server(CalculatorServicer(), server)
+validator_pb2_grpc.add_ValidatorServicer_to_server(ValidatorServicer(), server)
 
 print('Starting server. Listening on port 50051.')
 server.add_insecure_port('[::]:50051')
