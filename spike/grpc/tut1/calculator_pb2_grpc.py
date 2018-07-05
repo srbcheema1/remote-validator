@@ -14,10 +14,10 @@ class CalculatorStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.SquareRoot = channel.unary_unary(
-        '/Calculator/SquareRoot',
+    self.Even = channel.unary_unary(
+        '/Calculator/Even',
         request_serializer=calculator__pb2.Number.SerializeToString,
-        response_deserializer=calculator__pb2.Number.FromString,
+        response_deserializer=calculator__pb2.String.FromString,
         )
 
 
@@ -25,7 +25,7 @@ class CalculatorServicer(object):
   # missing associated documentation comment in .proto file
   pass
 
-  def SquareRoot(self, request, context):
+  def Even(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -35,10 +35,10 @@ class CalculatorServicer(object):
 
 def add_CalculatorServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'SquareRoot': grpc.unary_unary_rpc_method_handler(
-          servicer.SquareRoot,
+      'Even': grpc.unary_unary_rpc_method_handler(
+          servicer.Even,
           request_deserializer=calculator__pb2.Number.FromString,
-          response_serializer=calculator__pb2.Number.SerializeToString,
+          response_serializer=calculator__pb2.String.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

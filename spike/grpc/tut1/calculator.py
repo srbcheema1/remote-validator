@@ -1,5 +1,4 @@
-import math
-
-def square_root(x):
-  y = math.sqrt(x)
-  return y
+def Even(x):
+    if(x%2==0):
+        return "even"
+    return "odd"

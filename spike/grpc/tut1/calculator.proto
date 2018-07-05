@@ -4,6 +4,10 @@ message Number {
     float value = 1;
 }
 
+message String {
+    string value = 1;
+}
+
 service Calculator {
-    rpc SquareRoot(Number) returns (Number) {}
+    rpc Even(Number) returns (String) {}
 }
