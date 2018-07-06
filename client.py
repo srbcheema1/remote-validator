@@ -7,7 +7,8 @@ import validator_pb2_grpc
 
 # open a gRPC channel
 
-channel = grpc.insecure_channel('localhost:50051')
+port = 12321
+channel = grpc.insecure_channel('localhost:'+str(port))
 
 try:
     # try a connection
