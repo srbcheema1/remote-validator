@@ -3,6 +3,7 @@
 import grpc
 import sys
 import threading
+import time
 
 import validator_pb2 as message
 import validator_pb2_grpc as rpc
@@ -29,12 +30,10 @@ def create_iterator():
             inp = input()
         except:
             print("exiting . . .")
+            yield message.String(value="bye")
             break
         inp = message.String(value=inp)
         yield inp
-        if(inp.value == "0"):
-            break
-    yield message.String(value="bye")
 
 def receive_output():
     for note in stub.Get_result(message.Empty(),metadata=metadata):

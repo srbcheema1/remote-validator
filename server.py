@@ -42,9 +42,9 @@ class ValidatorServicer(rpc.ValidatorServicer):
             if (self.validator.poll() == None): # is alive
                 print("got req ",req.value)
                 if(req.value == "bye"):
-                    # end the validator with EOF
-                    self.validator.stdin.write(enc('^D'))
-                    self.alive = False
+                    print('EOF to validator')
+                    self.validator.stdin.close()
+                    time.sleep(2)
                     break
                 self.validator.stdin.write(self.endl(req.value))
                 self.validator.stdin.flush()
@@ -53,8 +53,8 @@ class ValidatorServicer(rpc.ValidatorServicer):
                 print("validation completes :)")
                 break
 
-        print("validator alive : ",end = "")
-        print(self.validator.poll() == None)
+        # print("validator alive : ",end = "")
+        # print(self.validator.poll() == None)
         return message.Empty()
 
     def Get_result(self, request, context):
@@ -63,12 +63,16 @@ class ValidatorServicer(rpc.ValidatorServicer):
         q = queue.Queue()
         t = threading.Thread(target=self.enqueue_output, args=(output_vcf.stdout, q))
         t.start()
+        while(self.validator == None):
+            pass
 
-        while (self.validator.poll() == None): # validator alive
+        # cannot terminate on validator.poll as it will exit eariler
+        # while (self.validator.poll() == None): # validator alive
+        while (self.validator.poll() == None or True): # validator alive
             try:
                 reply = q.get(timeout = 0)
             except queue.Empty: # no line yet
-                print('no output yet')
+                pass
             else: # got line
                 reply = dec(reply)
                 print("reply : ",end='')

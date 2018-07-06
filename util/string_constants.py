@@ -1,7 +1,7 @@
 vcf_path = "./bin/vcf_validator"
 out_path = "./bin/out/my_file.txt"
 
-debug = 1
+debug = 0
 
 if (debug == 1):
     vcf_path = "./bin/demo"
