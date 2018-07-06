@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import grpc
+import sys
 import threading
 
 import validator_pb2 as message
@@ -26,18 +27,20 @@ def create_iterator():
     while(True):
         try:
             inp = input()
-            if(int(inp) == 0):
-                break
         except:
             print("exiting . . .")
             break
         inp = message.String(value=inp)
         yield inp
-    yield message.String(value="0")
+        if(inp.value == "0"):
+            break
+    yield message.String(value="bye")
 
 def receive_output():
     for note in stub.Get_result(message.Empty(),metadata=metadata):
         print(note.value)
+        if(note.value == "bye"):
+            break
 
 def send_input():
     number_iterator = create_iterator()

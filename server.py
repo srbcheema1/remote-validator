@@ -2,11 +2,13 @@
 
 import argparse
 import grpc
+import queue
 import time
 import subprocess as sp
 import threading
 
 from concurrent import futures
+from select import select
 
 import validator_pb2 as message
 import validator_pb2_grpc as rpc
@@ -14,27 +16,11 @@ import validator_pb2_grpc as rpc
 from util.enc_dec import enc, dec
 from util.string_constants import vcf_path, out_path
 
-class Sender(threading.Thread):
-    def __init__(self, sender):
-        threading.Thread.__init__(self)
-        self.sender = sender
-        self.alive = True
-
-    def run(self):
-        print("in run")
-        # while (self.alive):
-            # print("in run")
-            # if (self.sender.poll() == None): # is alive
-                # reply = self.sender.stdout.readline().decode('UTF-8')
-                # response = message.String()
-                # response.value = reply
-                # yield response
-            # else:
-                # print("validation completes :)")
-                # break
-
-
 class ValidatorServicer(rpc.ValidatorServicer):
+    def __init__(self):
+        self.alive = True
+        self.get_res_alive = False
+
     def endl(self,data):
         if (type(data) is str):
             data = enc(data)
@@ -54,13 +40,12 @@ class ValidatorServicer(rpc.ValidatorServicer):
         for req in request:
             if (validator.poll() == None): # is alive
                 print("got req ",req.value)
+                if(req.value == "bye"):
+                    self.alive = False
+                    break
                 validator.stdin.write(self.endl(req.value))
                 validator.stdin.flush()
 
-                # reply = validator.stdout.readline().decode('UTF-8')
-                # response = message.String()
-                # response.value = reply
-                # yield response
             else:
                 print("validation completes :)")
                 break
@@ -70,16 +55,32 @@ class ValidatorServicer(rpc.ValidatorServicer):
     def Get_result(self, request, context):
         sp.Popen(["touch",out_path])
         output_vcf = sp.Popen(["tail -f "+out_path], shell=True, stdout=sp.PIPE)
+        q = queue.Queue()
+        t = threading.Thread(target=self.enqueue_output, args=(output_vcf.stdout, q))
+        t.start()
 
-        while (True):
-            if (output_vcf.poll() == None): # is alive
-                reply = output_vcf.stdout.readline().decode('UTF-8')
+        while (self.alive):
+            try:
+                reply = q.get(timeout = 2)
+            except queue.Empty: # no line yet
+                print('no output yet')
+            else: # got line
+                reply = dec(reply)
+                print("reply : ",end='')
+                print(reply)
                 response = message.String()
                 response.value = reply
                 yield response
-            else:
-                print("validation completes :)")
-                break
+
+        print("validation completes :)")
+        response = message.String()
+        response.value = "bye"
+        yield response
+
+    def enqueue_output(self, out, queue):
+        for line in iter(out.readline, b''):
+            queue.put(line)
+        out.close()
 
 if (__name__=="__main__"):
     # create a gRPC server
