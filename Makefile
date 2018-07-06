@@ -7,3 +7,7 @@ compile:
 
 clean:
 	rm *pb2*
+
+cpp:
+	g++ ./spike/cpp/demo.cpp -o bin/demo
+	g++ ./spike/cpp/even.cpp -o bin/even

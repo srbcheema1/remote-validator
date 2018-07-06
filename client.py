@@ -6,6 +6,7 @@ import validator_pb2
 import validator_pb2_grpc
 
 # open a gRPC channel
+
 channel = grpc.insecure_channel('localhost:50051')
 
 try:
@@ -24,6 +25,7 @@ def create_iterator():
         number = validator_pb2.String(value=inp)
         yield number
 
+metadata = [('ip', '127.0.0.1')]
 number_iterator = create_iterator()
-for out in stub.Validate(number_iterator):
+for out in stub.Validate(number_iterator,metadata=metadata):
     print(out.value)
