@@ -11,6 +11,7 @@ int main(){
        if(t == 0) break;
        if(t % 2 == 0) fout << "div by 2" << endl;
        if(t % 7 == 0) fout << "div by 7" << endl;
+       cout << t << endl;
    }
    fout.close();
    return 0;

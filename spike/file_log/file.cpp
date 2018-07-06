@@ -6,8 +6,6 @@ int main()
 {
    ofstream ofile;
    ofile.open ("my_file.txt");
-   ofile << "geeksforgeeks" << endl;
-   ofile << "geeksforgeeks" << endl;
 
    int t;
    cin>>t;

@@ -4,6 +4,9 @@ message String {
     string value = 1;
 }
 
+message Empty {}
+
 service Validator {
-    rpc Validate(stream String) returns (stream String) {}
+    rpc Validate (stream String) returns (Empty) {}
+    rpc Get_result (Empty) returns (stream String) {}
 }

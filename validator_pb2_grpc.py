@@ -14,9 +14,14 @@ class ValidatorStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.Validate = channel.stream_stream(
+    self.Validate = channel.stream_unary(
         '/Validator/Validate',
         request_serializer=validator__pb2.String.SerializeToString,
+        response_deserializer=validator__pb2.Empty.FromString,
+        )
+    self.Get_result = channel.unary_stream(
+        '/Validator/Get_result',
+        request_serializer=validator__pb2.Empty.SerializeToString,
         response_deserializer=validator__pb2.String.FromString,
         )
 
@@ -32,12 +37,24 @@ class ValidatorServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def Get_result(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_ValidatorServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'Validate': grpc.stream_stream_rpc_method_handler(
+      'Validate': grpc.stream_unary_rpc_method_handler(
           servicer.Validate,
           request_deserializer=validator__pb2.String.FromString,
+          response_serializer=validator__pb2.Empty.SerializeToString,
+      ),
+      'Get_result': grpc.unary_stream_rpc_method_handler(
+          servicer.Get_result,
+          request_deserializer=validator__pb2.Empty.FromString,
           response_serializer=validator__pb2.String.SerializeToString,
       ),
   }

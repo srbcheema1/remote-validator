@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='validator.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x0fvalidator.proto\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t2/\n\tValidator\x12\"\n\x08Validate\x12\x07.String\x1a\x07.String\"\x00(\x01\x30\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0fvalidator.proto\"\x17\n\x06String\x12\r\n\x05value\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2O\n\tValidator\x12\x1f\n\x08Validate\x12\x07.String\x1a\x06.Empty\"\x00(\x01\x12!\n\nGet_result\x12\x06.Empty\x1a\x07.String\"\x00\x30\x01\x62\x06proto3')
 )
 
 
@@ -55,7 +55,32 @@ _STRING = _descriptor.Descriptor(
   serialized_end=42,
 )
 
+
+_EMPTY = _descriptor.Descriptor(
+  name='Empty',
+  full_name='Empty',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=44,
+  serialized_end=51,
+)
+
 DESCRIPTOR.message_types_by_name['String'] = _STRING
+DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 String = _reflection.GeneratedProtocolMessageType('String', (_message.Message,), dict(
@@ -65,6 +90,13 @@ String = _reflection.GeneratedProtocolMessageType('String', (_message.Message,),
   ))
 _sym_db.RegisterMessage(String)
 
+Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), dict(
+  DESCRIPTOR = _EMPTY,
+  __module__ = 'validator_pb2'
+  # @@protoc_insertion_point(class_scope:Empty)
+  ))
+_sym_db.RegisterMessage(Empty)
+
 
 
 _VALIDATOR = _descriptor.ServiceDescriptor(
@@ -73,8 +105,8 @@ _VALIDATOR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=44,
-  serialized_end=91,
+  serialized_start=53,
+  serialized_end=132,
   methods=[
   _descriptor.MethodDescriptor(
     name='Validate',
@@ -82,6 +114,15 @@ _VALIDATOR = _descriptor.ServiceDescriptor(
     index=0,
     containing_service=None,
     input_type=_STRING,
+    output_type=_EMPTY,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Get_result',
+    full_name='Validator.Get_result',
+    index=1,
+    containing_service=None,
+    input_type=_EMPTY,
     output_type=_STRING,
     options=None,
   ),
