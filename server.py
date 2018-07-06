@@ -20,6 +20,7 @@ class ValidatorServicer(rpc.ValidatorServicer):
     def __init__(self):
         self.alive = True
         self.get_res_alive = False
+        self.validator = None
 
     def endl(self,data):
         if (type(data) is str):
@@ -36,20 +37,24 @@ class ValidatorServicer(rpc.ValidatorServicer):
         print(metadata)
 
 
-        validator = sp.Popen([vcf_path], stdin=sp.PIPE)
+        self.validator = sp.Popen([vcf_path], stdin=sp.PIPE)
         for req in request:
-            if (validator.poll() == None): # is alive
+            if (self.validator.poll() == None): # is alive
                 print("got req ",req.value)
                 if(req.value == "bye"):
+                    # end the validator with EOF
+                    self.validator.stdin.write(enc('^D'))
                     self.alive = False
                     break
-                validator.stdin.write(self.endl(req.value))
-                validator.stdin.flush()
+                self.validator.stdin.write(self.endl(req.value))
+                self.validator.stdin.flush()
 
             else:
                 print("validation completes :)")
                 break
 
+        print("validator alive : ",end = "")
+        print(self.validator.poll() == None)
         return message.Empty()
 
     def Get_result(self, request, context):
@@ -59,9 +64,9 @@ class ValidatorServicer(rpc.ValidatorServicer):
         t = threading.Thread(target=self.enqueue_output, args=(output_vcf.stdout, q))
         t.start()
 
-        while (self.alive):
+        while (self.validator.poll() == None): # validator alive
             try:
-                reply = q.get(timeout = 2)
+                reply = q.get(timeout = 0)
             except queue.Empty: # no line yet
                 print('no output yet')
             else: # got line
@@ -72,7 +77,7 @@ class ValidatorServicer(rpc.ValidatorServicer):
                 response.value = reply
                 yield response
 
-        print("validation completes :)")
+        print("Result completes :)")
         response = message.String()
         response.value = "bye"
         yield response
