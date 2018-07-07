@@ -1,1 +1,5 @@
 bin/vcf_validator
+bin/out/
+
+# compiled proto files
+*pb2*
