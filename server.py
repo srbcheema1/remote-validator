@@ -14,13 +14,15 @@ import validator_pb2 as message
 import validator_pb2_grpc as rpc
 
 from util.enc_dec import enc, dec
-from util.string_constants import vcf_path, out_path
+from util.string_constants import vcf_path
+from util.files import get_files_in_dir, clean_folder, verify_file
 
 class ValidatorServicer(rpc.ValidatorServicer):
     def __init__(self):
         self.alive = True
         self.get_res_alive = False
         self.validator = None
+        self.output_dir = "./bin/out/"
 
     def endl(self,data):
         if (type(data) is str):
@@ -36,8 +38,8 @@ class ValidatorServicer(rpc.ValidatorServicer):
         metadata = dict(context.invocation_metadata())
         print(metadata)
 
-
-        self.validator = sp.Popen([vcf_path], stdin=sp.PIPE)
+        clean_folder(self.output_dir)
+        self.validator = sp.Popen([vcf_path,"-o",self.output_dir], stdin=sp.PIPE)
         for req in request:
             if (self.validator.poll() == None): # is alive
                 print("got req ",req.value)
@@ -58,17 +60,22 @@ class ValidatorServicer(rpc.ValidatorServicer):
         return message.Empty()
 
     def Get_result(self, request, context):
-        sp.Popen(["touch",out_path])
-        output_vcf = sp.Popen(["tail -f "+out_path], shell=True, stdout=sp.PIPE)
+        while(self.validator == None):
+            time.sleep(0.1)
+            pass
+
+        output_file = get_files_in_dir(self.output_dir)[0]
+        output_file_path = self.output_dir + output_file
+        verify_file(output_file_path)
+
+        output_vcf = sp.Popen(["tail -f "+output_file_path], shell=True, stdout=sp.PIPE)
         q = queue.Queue()
         t = threading.Thread(target=self.enqueue_output, args=(output_vcf.stdout, q))
         t.start()
-        while(self.validator == None):
-            pass
 
         # cannot terminate on validator.poll as it will exit eariler
         # while (self.validator.poll() == None): # validator alive
-        while (self.validator.poll() == None or True): # validator alive
+        while (self.validator.poll() == None or True): # validator alive or dead we will continue
             try:
                 reply = q.get(timeout = 0)
             except queue.Empty: # no line yet

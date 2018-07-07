@@ -6,7 +6,7 @@ int main(){
    ofstream fout;
    fout.open ("bin/out/my_file.txt");
    int i=1;
-   while(1) {
+   while(std::cin) {
        int t;
        cin >> t;
        if(t == 0) break;
