@@ -12,7 +12,6 @@ import validator_pb2_grpc as rpc
 
 port = 12321
 channel = grpc.insecure_channel('localhost:'+str(port))
-metadata = [('name', 'srb')]
 
 try:
     # try a connection
@@ -29,7 +28,6 @@ def create_iterator():
         try:
             inp = input()
         except:
-            print("exiting . . .")
             yield message.String(value="bye")
             break
         inp = message.String(value=inp)
@@ -45,5 +43,10 @@ def send_input():
     number_iterator = create_iterator()
     stub.Validate(number_iterator,metadata=metadata)
 
+user_id = stub.Get_user_id(message.Empty())
+user_id = user_id.value
+metadata = [('user_id', str(user_id))]
+
 threading.Thread(target=send_input, daemon=True).start()
 receive_output()
+

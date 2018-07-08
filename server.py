@@ -9,6 +9,7 @@ import threading
 
 from concurrent import futures
 from select import select
+from random import randint
 
 import validator_pb2 as message
 import validator_pb2_grpc as rpc
@@ -23,6 +24,7 @@ class ValidatorServicer(rpc.ValidatorServicer):
         self.get_res_alive = False
         self.validator = None
         self.output_dir = "./bin/out/"
+        self.user_list = {}
 
     def endl(self,data):
         if (type(data) is str):
@@ -34,39 +36,41 @@ class ValidatorServicer(rpc.ValidatorServicer):
             return data + enc('\n')
 
     def Validate(self, request, context):
+
         # metadata is a list of arbitrary key-value pairs that the client can send along with a reques
         metadata = dict(context.invocation_metadata())
         print(metadata)
 
         clean_folder(self.output_dir)
-        self.validator = sp.Popen([vcf_path,"-o",self.output_dir], stdin=sp.PIPE)
+        self.validator = sp.Popen([vcf_path,"-r","text","-o",self.output_dir], stdin=sp.PIPE)
+
         for req in request:
             if (self.validator.poll() == None): # is alive
                 print("got req ",req.value)
                 if(req.value == "bye"):
+                    # time.sleep(5) # time to let output code run
                     print('EOF to validator')
                     self.validator.stdin.close()
-                    time.sleep(2)
                     break
                 self.validator.stdin.write(self.endl(req.value))
                 self.validator.stdin.flush()
 
             else:
-                print("validation completes :)")
+                print("Process killed :)")
                 break
 
-        # print("validator alive : ",end = "")
-        # print(self.validator.poll() == None)
         return message.Empty()
 
     def Get_result(self, request, context):
-        while(self.validator == None):
-            time.sleep(0.1)
-            pass
+        while (self.validator == None): # yet not started
+            time.sleep(0.1) # time to let validator start else it will pick up old file
+
+        while (len(get_files_in_dir(self.output_dir)) == 0):
+            time.sleep(0.1) # time to let file to be created else next statement will get no file
+            output_file = get_files_in_dir(self.output_dir)
 
         output_file = get_files_in_dir(self.output_dir)[0]
         output_file_path = self.output_dir + output_file
-        verify_file(output_file_path)
 
         output_vcf = sp.Popen(["tail -f "+output_file_path], shell=True, stdout=sp.PIPE)
         q = queue.Queue()
@@ -97,6 +101,16 @@ class ValidatorServicer(rpc.ValidatorServicer):
         for line in iter(out.readline, b''):
             queue.put(line)
         out.close()
+
+    def Get_user_id(self, request, context):
+        user_id = randint(1,1000)
+        while (user_id in self.user_list):
+            user_id = randint(1,1000)
+        self.user_list[user_id] = str(user_id)
+        response = message.Number()
+        response.value = user_id
+        return response
+
 
 if (__name__=="__main__"):
     # create a gRPC server
