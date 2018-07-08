@@ -7,3 +7,5 @@ if (debug == 1):
 if (debug == 2):
     vcf_path = "./bin/even"
 
+end_of_report = "According to the VCF specification, the input file is valid"
+end_of_report_neg = "According to the VCF specification, the input file is not valid"

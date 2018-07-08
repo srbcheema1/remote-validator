@@ -15,7 +15,7 @@ import validator_pb2 as message
 import validator_pb2_grpc as rpc
 
 from util.enc_dec import enc, dec
-from util.string_constants import vcf_path
+from util.string_constants import vcf_path, end_of_report_neg, end_of_report
 from util.files import get_files_in_dir, clean_folder, verify_file
 
 class ValidatorServicer(rpc.ValidatorServicer):
@@ -27,13 +27,29 @@ class ValidatorServicer(rpc.ValidatorServicer):
         self.user_list = {}
 
     def endl(self,data):
+        print("data is ",end='')
+        print(data)
         if (type(data) is str):
             data = enc(data)
+
+        if (len(data) == 0):
+            return data
 
         if(data[-1] == enc('\n')):
             return data
         else:
             return data + enc('\n')
+
+    def make_reply(self, reply):
+        reply = dec(reply)
+        print("reply : ",end='')
+        print(reply)
+        if(len(reply) == 0):
+            return reply
+
+        if(reply[-1]=='\n'):
+            return reply[:-1]
+
 
     def Validate(self, request, context):
 
@@ -56,7 +72,7 @@ class ValidatorServicer(rpc.ValidatorServicer):
                 self.validator.stdin.flush()
 
             else:
-                print("Process killed :)")
+                print("Process Finished")
                 break
 
         return message.Empty()
@@ -85,12 +101,12 @@ class ValidatorServicer(rpc.ValidatorServicer):
             except queue.Empty: # no line yet
                 pass
             else: # got line
-                reply = dec(reply)
-                print("reply : ",end='')
-                print(reply)
+                reply = self.make_reply(reply)
                 response = message.String()
                 response.value = reply
                 yield response
+                if(reply == end_of_report or reply == end_of_report_neg):
+                    break
 
         print("Result completes :)")
         response = message.String()
