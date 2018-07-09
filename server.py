@@ -16,6 +16,7 @@ import validator_pb2_grpc as rpc
 
 from util.enc_dec import enc, dec
 from util.string_constants import vcf_path, end_of_report_neg, end_of_report
+from util.defaults import default_port, default_ip
 from util.files import get_files_in_dir, clean_folder, verify_file
 
 class ValidatorServicer(rpc.ValidatorServicer):
@@ -27,8 +28,6 @@ class ValidatorServicer(rpc.ValidatorServicer):
         self.user_list = {}
 
     def endl(self,data):
-        print("data is ",end='')
-        print(data)
         if (type(data) is str):
             data = enc(data)
 
@@ -42,8 +41,6 @@ class ValidatorServicer(rpc.ValidatorServicer):
 
     def make_reply(self, reply):
         reply = dec(reply)
-        print("reply : ",end='')
-        print(reply)
         if(len(reply) == 0):
             return reply
 
@@ -129,15 +126,19 @@ class ValidatorServicer(rpc.ValidatorServicer):
 
 
 if (__name__=="__main__"):
-    # create a gRPC server
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    # use the generated function `add_ValidatorServicer_to_server`
-    # to add the defined class to the server
-    rpc.add_ValidatorServicer_to_server(ValidatorServicer(), server)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--port",default=default_port, help="PORT number eg:- 12321")
+    parser.add_argument("-i", "--ip",default=default_ip, help="IP adress eg:- 127.0.0.1")
+    args = parser.parse_args()
 
-    port=12321
-    print('Starting server. Listening on port '+str(port)+'.')
-    server.add_insecure_port('[::]:'+ str(port))
+    ip = args.ip
+    port = int(args.port)
+
+    # Create Server
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    rpc.add_ValidatorServicer_to_server(ValidatorServicer(), server)
+    server.add_insecure_port(ip+':'+ str(port))
+    print('Starting server on ' + ip + ' Listening on port ' + str(port) + '.')
     server.start()
 
     try:

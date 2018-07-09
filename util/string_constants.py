@@ -9,8 +9,3 @@ if (debug == 2):
 
 end_of_report = "According to the VCF specification, the input file is valid"
 end_of_report_neg = "According to the VCF specification, the input file is not valid"
-
-default_ip = 'localhost'
-default_port = 12321
-
-connection_timeout = 10

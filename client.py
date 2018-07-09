@@ -9,7 +9,7 @@ import time
 import validator_pb2 as message
 import validator_pb2_grpc as rpc
 
-from util.string_constants import default_ip, default_port, connection_timeout
+from util.defaults import default_ip, default_port, connection_timeout
 
 # open a gRPC channel
 
@@ -69,7 +69,7 @@ class User:
 
 if (__name__ == "__main__"):
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--port",default=default_port, help="PORT number eg:- 12345")
+    parser.add_argument("-p", "--port",default=default_port, help="PORT number eg:- 12321")
     parser.add_argument("-i", "--ip",default=default_ip, help="IP adress eg:- 127.0.0.1")
     args = parser.parse_args()
 
