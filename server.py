@@ -86,7 +86,7 @@ class ValidatorServicer(rpc.ValidatorServicer):
         output_file = get_files_in_dir(self.output_dir)[0]
         output_file_path = self.output_dir + output_file
 
-        output_vcf = sp.Popen(["tail -f "+output_file_path], shell=True, stdout=sp.PIPE)
+        output_vcf = sp.Popen(["tail -n999999 -f "+output_file_path], shell=True, stdout=sp.PIPE)
         q = queue.Queue()
         t = threading.Thread(target=self.enqueue_output, args=(output_vcf.stdout, q))
         t.start()
