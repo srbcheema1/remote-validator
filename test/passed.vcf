@@ -1,4 +1,4 @@
-##fileformat=VCFv4
+##fileformat=VCFv4.3
 ##PEDIGREE=<ID=TumourSample,Original=GermlineID>
 ##PEDIGREE=<ID=SomaticNonTumour,Original=GermlineID>
 ##PEDIGREE=<ID=ChildID,Father=FatherID,Mother=MotherID>
