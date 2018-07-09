@@ -1,4 +1,4 @@
-bin/vcf_validator
+bin/vcf_validator*
 bin/out/
 
 # compiled proto files
