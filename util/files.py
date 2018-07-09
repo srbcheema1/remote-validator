@@ -27,3 +27,8 @@ def clean_folder(folder):
     list_files = get_files_in_dir(folder)
     for file_name in list_files:
         os.remove(folder + "/" + file_name)
+
+def del_folder(folder):
+    folder = abs_path(folder)
+    verify_folder(folder)
+    os.rmdir(folder)

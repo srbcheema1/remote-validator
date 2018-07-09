@@ -17,7 +17,7 @@ import validator_pb2_grpc as rpc
 from util.enc_dec import enc, dec
 from util.string_constants import vcf_path, end_of_report_neg, end_of_report
 from util.defaults import default_port, default_ip
-from util.files import get_files_in_dir, clean_folder, verify_file
+from util.files import get_files_in_dir, clean_folder, del_folder, verify_file
 
 class ValidatorServicer(rpc.ValidatorServicer):
     def __init__(self):
@@ -54,6 +54,7 @@ class ValidatorServicer(rpc.ValidatorServicer):
         metadata = dict(context.invocation_metadata())
         print(metadata)
 
+        self.output_dir = self.output_dir + metadata['user_id'] + '/'
         clean_folder(self.output_dir)
         self.validator = sp.Popen([vcf_path,"-r","text","-o",self.output_dir], stdin=sp.PIPE)
 
@@ -106,6 +107,8 @@ class ValidatorServicer(rpc.ValidatorServicer):
                     break
 
         print("Result completes :)")
+        clean_folder(self.output_dir)
+        del_folder(self.output_dir)
         response = message.String()
         response.value = "bye"
         yield response
