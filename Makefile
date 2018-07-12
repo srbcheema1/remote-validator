@@ -11,5 +11,4 @@ clean:
 	rm *pb2*
 
 cpp:
-	g++ ./spike/cpp/demo.cpp -o bin/demo
-	g++ ./spike/cpp/even.cpp -o bin/even
+	g++ --std=c++11 ./spike/cpp/demo_main.cpp -lboost_filesystem -lboost_program_options -lboost_system -o bin/vcf_demo
