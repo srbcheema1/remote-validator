@@ -48,8 +48,6 @@ class ValidatorServicer(rpc.ValidatorServicer):
 
 
     def Validate(self, request, context):
-
-        # metadata is a list of arbitrary key-value pairs that the client can send along with a reques
         metadata = dict(context.invocation_metadata())
         print(metadata)
 
@@ -60,12 +58,12 @@ class ValidatorServicer(rpc.ValidatorServicer):
         for req in request:
             if (self.validator.poll() == None): # is alive
                 print("got req ",req.value)
-                if(req.value == "bye"):
+                if(req.value == b'bye'):
                     # time.sleep(5) # time to let output code run
                     print('EOF to validator')
                     self.validator.stdin.close()
                     break
-                self.validator.stdin.write(self.endl(req.value))
+                self.validator.stdin.write(req.value)
                 self.validator.stdin.flush()
 
             else:

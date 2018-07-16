@@ -9,7 +9,7 @@ import time
 import validator_pb2 as message
 import validator_pb2_grpc as rpc
 
-from util.defaults import default_ip, default_port, connection_timeout
+from util.defaults import default_ip, default_port, connection_timeout, chunk_size
 
 # open a gRPC channel
 
@@ -40,14 +40,14 @@ class User:
         self.metadata = [('user_id', str(self.user_id))]
 
     def create_iterator(self):
-        while(True):
-            try:
-                inp = input()
-            except:
-                yield message.String(value="bye")
-                break
-            inp = message.String(value=inp)
-            yield inp
+        with sys.stdin.buffer as f:
+            while(True):
+                inp = f.read(chunk_size)
+                if not inp:
+                    yield message.Bytes(value=b'bye')
+                    break
+                inp = message.Bytes(value=inp)
+                yield inp
 
     def receive_output(self):
         for note in self.stub.Get_result(message.Empty(),metadata=self.metadata):
