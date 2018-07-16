@@ -3,3 +3,6 @@ bin/out/
 
 # compiled proto files
 *pb2*
+
+# big vcf files
+test/big*

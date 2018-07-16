@@ -8,7 +8,7 @@ def verify_folder(folder,debug=False):
     elif os.path.isfile(folder):
         if(debug): print('there exists folder of same name')
 
-def verify_file(file_path):
+def verify_file(file_path,debug=False):
     if not os.path.exists(file_path):
         if(debug): print('creating file '+ file_path)
         file_ = open(file_path, 'w')

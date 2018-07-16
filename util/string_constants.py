@@ -1,6 +1,6 @@
 vcf_path = "./bin/vcf_validator"
 
-debug = 1
+debug = 0
 
 if (debug == 1):
     vcf_path = "./bin/vcf_demo"
