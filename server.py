@@ -8,7 +8,6 @@ import subprocess as sp
 import threading
 
 from concurrent import futures
-from select import select
 from random import randint
 
 import validator_pb2 as message
