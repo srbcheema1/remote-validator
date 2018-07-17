@@ -11,8 +11,6 @@ import validator_pb2_grpc as rpc
 
 from util.defaults import default_ip, default_port, connection_timeout, chunk_size
 
-# open a gRPC channel
-
 class User:
     def __init__(self, ip=default_ip, port=default_port):
         self.input_iterator = self.create_iterator()
@@ -26,12 +24,10 @@ class User:
     def create_connection(self):
         channel = grpc.insecure_channel(self.ip+':'+str(self.port))
         try:
-            # try a connection
             grpc.channel_ready_future(channel).result(timeout=connection_timeout)
         except grpc.FutureTimeoutError:
             sys.exit('Error connecting to server')
         else:
-            # create a stub (client)
             self.stub = rpc.ValidatorStub(channel)
 
     def get_user_id(self):
@@ -70,10 +66,10 @@ class User:
 if (__name__ == "__main__"):
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port",default=default_port, help="PORT number eg:- 12321")
-    parser.add_argument("-i", "--ip",default=default_ip, help="IP adress eg:- 127.0.0.1")
+    parser.add_argument("-a", "--address",default=default_ip, help="IP adress eg:- 127.0.0.1")
     args = parser.parse_args()
 
-    ip = args.ip
+    ip = args.address
     port = int(args.port)
 
     user = User(ip, port)

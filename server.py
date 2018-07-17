@@ -88,9 +88,7 @@ class ValidatorServicer(rpc.ValidatorServicer):
         t = threading.Thread(target=self.enqueue_output, args=(output_vcf.stdout, q))
         t.start()
 
-        # cannot terminate on validator.poll as it will exit eariler
-        # while (self.validator.poll() == None): # validator alive
-        while (self.validator.poll() == None or True): # validator alive or dead we will continue
+        while (True): # validator alive or dead we will continue
             try:
                 reply = q.get(timeout = 0)
             except queue.Empty: # no line yet
@@ -128,13 +126,12 @@ class ValidatorServicer(rpc.ValidatorServicer):
 if (__name__=="__main__"):
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port",default=default_port, help="PORT number eg:- 12321")
-    parser.add_argument("-i", "--ip",default=default_ip, help="IP adress eg:- 127.0.0.1")
+    parser.add_argument("-a", "--address",default=default_ip, help="IP adress eg:- 127.0.0.1")
     args = parser.parse_args()
 
-    ip = args.ip
+    ip = args.address
     port = int(args.port)
 
-    # Create Server
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     rpc.add_ValidatorServicer_to_server(ValidatorServicer(), server)
     server.add_insecure_port(ip+':'+ str(port))
